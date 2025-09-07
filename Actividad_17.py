@@ -103,3 +103,39 @@ class ConcursoBandasApp:
         barra.add_cascade(label="Opciones", menu=opciones)
         self.ventana.config(menu=barra)
 
+        def inscribir_banda(self):
+            ventana_inscribir = tk.Toplevel(self.ventana)
+            ventana_inscribir.title("Inscribir Banda")
+            ventana_inscribir.geometry("300x250")
+
+            tk.Label(ventana_inscribir, text="Nombre de la banda:").pack()
+            entry_nombre = tk.Entry(ventana_inscribir)
+            entry_nombre.pack()
+
+            tk.Label(ventana_inscribir, text="Institución:").pack()
+            entry_institucion = tk.Entry(ventana_inscribir)
+            entry_institucion.pack()
+
+            tk.Label(ventana_inscribir, text="Categoría (Primaria, Básico, Diversificado):").pack()
+            entry_categoria = tk.Entry(ventana_inscribir)
+            entry_categoria.pack()
+
+        def guardar():
+            try:
+                banda = BandaEscolar(entry_nombre.get(), entry_institucion.get(), entry_categoria.get())
+                self.concurso.inscribir_banda(banda)
+                self.mostrar_mensaje("Banda inscrita con éxito.", "green")
+                ventana_inscribir.destroy()
+            except Exception as e:
+                self.mostrar_mensaje(str(e), "red")
+
+        tk.Button(ventana_inscribir, text="Guardar", command=guardar).pack(pady=10)
+
+        def registrar_evaluacion(self):
+            ventana_eval = tk.Toplevel(self.ventana)
+            ventana_eval.title("Registrar Evaluación")
+            ventana_eval.geometry("350x400")
+
+            tk.Label(ventana_eval, text="Nombre de la banda:").pack()
+            entry_nombre = tk.Entry(ventana_eval)
+            entry_nombre.pack()
