@@ -39,3 +39,67 @@ class BandaEscolar(Participante):
         if self._puntajes:
             info += f" | Total: {self.total()}"
         return info
+
+class Concurso:
+    def __init__(self, nombre, fecha):
+        self.nombre = nombre
+        self.fecha = fecha
+        self.bandas = []
+
+    def inscribir_banda(self, banda):
+        if any(b.nombre == banda.nombre for b in self.bandas):
+            raise ValueError("Ya existe una banda con ese nombre.")
+        self.bandas.append(banda)
+
+    def registrar_evaluacion(self, nombre_banda, puntajes):
+        banda = next((b for b in self.bandas if b.nombre == nombre_banda), None)
+        if not banda:
+            raise ValueError("Banda no encontrada.")
+        banda.registrar_puntajes(puntajes)
+
+    def listar_bandas(self):
+        return [b.mostrar_info() for b in self.bandas]
+
+    def ranking(self):
+        return sorted(
+            self.bandas,
+            key=lambda b: b.total(),
+            reverse=True
+        )
+class ConcursoBandasApp:
+    def __init__(self):
+        self.concurso = Concurso("Concurso de Bandas - 14 Septiembre", "2025-09-14")
+
+        self.ventana = tk.Tk()
+        self.ventana.title("Concurso de Bandas - Quetzaltenango")
+        self.ventana.geometry("500x400")
+
+        self.menu()
+
+        tk.Label(
+            self.ventana,
+            text="Sistema de Inscripción y Evaluación de Bandas Escolares\nConcurso 14 de Septiembre - Quetzaltenango",
+            font=("Arial", 12, "bold"),
+            justify="center"
+        ).pack(pady=20)
+
+        self.area_mensajes = tk.Label(self.ventana, text="", fg="blue", font=("Arial", 10))
+        self.area_mensajes.pack(pady=10)
+
+        self.ventana.mainloop()
+
+    def mostrar_mensaje(self, texto, color="blue"):
+        self.area_mensajes.config(text=texto, fg=color)
+
+    def menu(self):
+        barra = tk.Menu(self.ventana)
+        opciones = tk.Menu(barra, tearoff=0)
+        opciones.add_command(label="Inscribir Banda", command=self.inscribir_banda)
+        opciones.add_command(label="Registrar Evaluación", command=self.registrar_evaluacion)
+        opciones.add_command(label="Listar Bandas", command=self.listar_bandas)
+        opciones.add_command(label="Ver Ranking", command=self.ver_ranking)
+        opciones.add_separator()
+        opciones.add_command(label="Salir", command=self.ventana.quit)
+        barra.add_cascade(label="Opciones", menu=opciones)
+        self.ventana.config(menu=barra)
+
